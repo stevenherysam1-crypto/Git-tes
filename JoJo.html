@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Joanna ❤️</title>
+
+<style>
+body {
+    margin:0;
+    background:#b30000;
+    font-family: Arial, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+}
+
+.container {
+    max-width:400px;
+}
+
+.big-heart {
+    font-size:120px;
+    animation: beat 1s infinite;
+}
+
+@keyframes beat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+button {
+    padding:12px 20px;
+    margin:10px;
+    font-size:16px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.oui {
+    background:white;
+    color:#b30000;
+}
+
+.non {
+    background:#ddd;
+}
+
+.hidden {
+    display:none;
+}
+
+img {
+    max-width:100%;
+    border-radius:15px;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ❤️ ÉCRAN 1 -->
+    <div id="start">
+        <div class="big-heart">❤️</div>
+        <h3>Veux-tu ouvrir ?</h3>
+        <button class="oui" onclick="accepter()">Oui 🫶🏽</button>
+        <button class="non" onmouseover="fuir()">Non 🙄</button>
+    </div>
+
+    <!-- 🎉 ÉCRAN FINAL -->
+    <div id="final" class="hidden">
+
+        <!-- 🧸 Deux oursons qui se câlinent -->
+        <img src="https://media.giphy.com/media/GMFUrC8E8aWoo/giphy.gif">
+
+        <h2>Joyeux Saint Valentin Joanna ❤️</h2>
+        <p>Et bon courage dans tout ce que tu fais 😊😌✨</p>
+
+        <!-- 📸 PHOTO DE JOANNA -->
+        <img src="https://i.postimg.cc/svBBqmLL/IMG-20260214-WA0000.jpg">
+
+    </div>
+
+</div>
+
+<!-- 🎵 MUSIQUE DOUCE -->
+<audio id="music">
+    <source src="https://cdn.pixabay.com/audio/2023/03/06/audio_3d6b0df0c4.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+function fuir(){
+    const btn = document.querySelector(".non");
+    btn.style.position = "absolute";
+    btn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+    btn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+}
+
+function accepter(){
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+    document.getElementById("music").play();
+}
+
+</script>
+
+</body>
+</html>
