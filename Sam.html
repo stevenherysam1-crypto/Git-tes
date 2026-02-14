@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Scina 💖</title>
+
+<style>
+body {
+    margin:0;
+    overflow:hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #ffd6e8, #ffc0cb);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+}
+
+.card {
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    position:relative;
+    z-index:2;
+    width:90%;
+    max-width:400px;
+}
+
+h1 {
+    color:#ff2e88;
+    min-height:50px;
+}
+
+button {
+    padding:15px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.oui {
+    background:#ff2e88;
+    color:white;
+}
+
+.non {
+    background:#ddd;
+}
+
+.oui:hover {
+    transform:scale(1.1);
+}
+
+.heart {
+    position:absolute;
+    color:red;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-10vh); }
+    100% { transform: translateY(110vh); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>💗 Pour <span id="prenom"></span> 💗</h2>
+    <h1 id="question"></h1>
+    <button class="oui" onclick="oui()">Oui 💖</button>
+    <button class="non" onmouseover="fuir()">Non 😢</button>
+</div>
+
+<audio id="music" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+// 💌 Écriture lente
+const prenom = "Julie";  // <-- CHANGE ICI
+const questionText = "Veux-tu être ma Valentine ? 💝";
+
+let i = 0;
+function typeWriter() {
+    if (i < questionText.length) {
+        document.getElementById("question").innerHTML += questionText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 50);
+    }
+}
+typeWriter();
+
+document.getElementById("prenom").innerText = prenom;
+
+
+// ✨ Cœurs qui tombent
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 5000);
+}
+
+setInterval(createHeart, 300);
+
+
+// 😈 Bouton NON qui fuit
+function fuir() {
+    const btn = document.querySelector(".non");
+    btn.style.position = "absolute";
+    btn.style.top = Math.random() * window.innerHeight + "px";
+    btn.style.left = Math.random() * window.innerWidth + "px";
+}
+
+
+// 🔥 Explosion quand elle clique OUI
+function oui() {
+    for (let i = 0; i < 50; i++) {
+        createHeart();
+    }
+    alert("YEEEEES 💕 Je t’aime trop 😭💖");
+}
+
+</script>
+
+</body>
+</html>
