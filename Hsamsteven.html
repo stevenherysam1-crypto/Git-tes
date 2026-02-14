@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Ma dame 💖</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #ffd6e8, #ffc0cb);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+}
+
+/* Écran enveloppe */
+#envelopeScreen {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#envelopeScreen img {
+    width:200px;
+    cursor:pointer;
+    transition:0.3s;
+}
+#envelopeScreen img:hover {
+    transform: scale(1.1);
+}
+
+/* Message card */
+.card {
+    display:none;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    width:90%;
+    max-width:400px;
+}
+
+h1 {
+    color:#ff2e88;
+    min-height:50px;
+}
+
+button {
+    padding:15px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.oui {
+    background:#ff2e88;
+    color:white;
+}
+
+.non {
+    background:#ddd;
+}
+
+.oui:hover {
+    transform:scale(1.1);
+}
+
+/* GIF et photo */
+#gifContainer {
+    display:none;
+    position:absolute;
+    text-align:center;
+}
+
+#gifContainer img {
+    width:250px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    margin:10px 0;
+}
+
+#gifContainer h2 {
+    color:#ff2e88;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎁 Écran 1 : Enveloppe -->
+<div id="envelopeScreen">
+    <img src="https://i.postimg.cc/4x1kZpJ7/envelope.png" id="envelope" onclick="openLetter()">
+    <p>Clique pour ouvrir la lettre 💌</p>
+</div>
+
+<!-- ✉️ Écran 2 : Message -->
+<div class="card">
+    <h2>💗 Pour <span id="prenom"></span> 💗</h2>
+    <h1 id="question"></h1>
+    <button class="oui" onclick="oui()">Oui 💖</button>
+    <button class="non" onmouseover="fuir()">Non 😢</button>
+</div>
+
+<!-- 🐱 Écran 3 : OUI avec chat et photo -->
+<div id="gifContainer">
+    <h2>Merci Ma dame 💖</h2>
+    <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="chat qui embrasse">
+    
+    <!-- 🔴 PHOTO DE SCINA AVEC LIEN GOOGLE 🔴 -->
+    <img src="https://lh3.googleusercontent.com/d/6VfgZxRHbMPvtpKUA=s800" alt="Scina" style="width:200px; border-radius:20px;">
+    <!-- 🔴 FIN PHOTO 🔴 -->
+    
+</div>
+
+<!-- 🎶 Musique -->
+<audio id="music" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// 💌 Personnalisation
+const prenom = "Scina";
+const questionText = "Scina… veux-tu être ma Valentine ? 💝";
+
+document.getElementById("prenom").innerText = prenom;
+
+// ✉️ Ouvrir la lettre
+function openLetter() {
+    document.getElementById("envelopeScreen").style.display = "none";
+    document.querySelector(".card").style.display = "block";
+    typeWriter();
+}
+
+// ✍️ Écriture lente
+let i = 0;
+function typeWriter() {
+    if (i < questionText.length) {
+        document.getElementById("question").innerHTML += questionText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 60);
+    }
+}
+
+// 😈 Bouton NON qui fuit
+function fuir() {
+    const btn = document.querySelector(".non");
+    btn.style.position = "absolute";
+    btn.style.top = Math.random() * window.innerHeight + "px";
+    btn.style.left = Math.random() * window.innerWidth + "px";
+}
+
+// 🐱 Quand elle clique OUI
+function oui() {
+    document.querySelector(".card").style.display = "none";
+    document.getElementById("gifContainer").style.display = "block";
+}
+</script>
+
+</body>
+</html>
