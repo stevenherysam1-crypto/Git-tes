@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Pour Julie 💖</title>
+    <title>Pour Scina 💖</title>
     <style>
         body {
             margin: 0;
@@ -54,8 +54,8 @@
 <body>
 
 <div class="card">
-    <h2>💗 Pour Julie 💗</h2>
-    <h1>Veux-tu être ma Valentine ? 💝</h1>
+    <h2>💗 Pour Scina 💗</h2>
+    <h1>Veux-tu être ma Valentine ? 🫶🏽</h1>
     
     <button class="oui" onclick="oui()">Oui 💖</button>
     <button class="non" onmouseover="fuir()">Non 😢</button>
@@ -63,7 +63,7 @@
 
 <script>
 function oui() {
-    alert("YEEEEES 💕 Je t’aime trop 😭💖");
+    alert("YEEEEES 💕 Je t’aime Ma dame 😗💖");
 }
 
 function fuir() {
