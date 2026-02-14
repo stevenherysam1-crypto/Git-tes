@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Miss Linah 🫶</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: #ff4d4d; /* fond rouge */
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+    flex-direction: column;
+}
+
+.card {
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    width:90%;
+    max-width:400px;
+    position: relative;
+}
+
+h1 {
+    color:#0077cc;
+    min-height:50px;
+}
+
+button {
+    padding:15px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.oui {
+    background:#0077cc;
+    color:white;
+}
+
+.non {
+    background:#ddd;
+}
+
+.oui:hover, .non:hover {
+    transform:scale(1.05);
+}
+
+#gifStart, #gifFinal, #photo {
+    display:none;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    margin-top:20px;
+}
+
+#gifStart {
+    width:300px;
+}
+
+#gifFinal {
+    width:250px;
+}
+
+#photo {
+    width:200px;
+}
+
+#continueText {
+    color:white;
+    font-size:1.5em;
+    margin-top:15px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Écran initial GIF insouciant -->
+<div id="startScreen">
+    <img id="gifStart" src="https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif" alt="GIF insouciant">
+    <div id="continueText" onclick="showQuestion()">Appuyez pour continuer</div>
+</div>
+
+<!-- Écran question Oui/Non -->
+<div class="card" id="questionScreen" style="display:none;">
+    <h1>Veux-tu ouvrir ?</h1>
+    <button class="oui" onclick="oui()">Oui 🫶🏽</button>
+    <button class="non" onclick="non()">Non 🙄</button>
+</div>
+
+<!-- Écran final GIF + photo -->
+<div id="finalScreen" style="display:flex; flex-direction: column; align-items:center;">
+    <img id="gifFinal" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="chat mignon">
+    <img id="photo" src="https://i.postimg.cc/zLL6qXtH/linah.jpg" alt="Miss Linah">
+    <h1 id="finalMessage" style="color:white; margin-top:20px;"></h1>
+</div>
+
+<!-- MUSIQUE DOUCE -->
+<audio id="music" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Affiche l'écran question après clic sur "Appuyez pour continuer"
+function showQuestion() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("questionScreen").style.display = "block";
+}
+
+// Bouton NON
+function non() {
+    alert("Non et je ne te pardonne pas 🙄");
+}
+
+// Bouton OUI
+function oui() {
+    document.getElementById("questionScreen").style.display = "none";
+    document.getElementById("finalScreen").style.display = "flex";
+
+    document.getElementById("gifFinal").style.display = "block";
+    document.getElementById("photo").style.display = "block";
+
+    const finalMessage = document.getElementById("finalMessage");
+    finalMessage.innerText = "Joyeux Saint-Valentin Miss Linah, tu es importante pour moi 🥺 gros bisous 😚";
+
+    // Lancer la musique douce
+    const music = document.getElementById("music");
+    music.play().catch(()=>{});
+}
+</script>
+
+</body>
+</html>
