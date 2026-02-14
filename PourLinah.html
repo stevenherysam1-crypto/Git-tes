@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Miss Linah 🫶</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #cce7ff, #99d6ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+    flex-direction: column;
+}
+
+.card {
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    width:90%;
+    max-width:400px;
+    position: relative;
+}
+
+h1 {
+    color:#0077cc;
+    min-height:50px;
+}
+
+button {
+    padding:15px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.oui {
+    background:#0077cc;
+    color:white;
+}
+
+.non {
+    background:#ddd;
+}
+
+.oui:hover {
+    transform:scale(1.1);
+}
+
+#gifContainer {
+    display:none;
+    flex-direction: column;
+    align-items: center;
+}
+
+#gifContainer img {
+    width:250px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    margin-top:20px;
+}
+
+/* Photo de Linah */
+#photo {
+    width:200px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    margin-top:20px;
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Veux-tu ouvrir ? Oui ou Non ?</h1>
+    <button class="oui" onclick="oui()">Oui 🫶</button>
+    <button class="non" onmouseover="fuir()">Non 😅</button>
+</div>
+
+<!-- GIF de chat -->
+<div id="gifContainer">
+    <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="chat mignon">
+</div>
+
+<!-- Photo de Miss Linah -->
+<img id="photo" src="https://i.postimg.cc/zLL6qXtH/linah.jpg" alt="Miss Linah">
+
+<!-- MUSIQUE DOUCE -->
+<audio id="music" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// 😅 Bouton NON qui fuit
+function fuir() {
+    const btn = document.querySelector(".non");
+    btn.style.position = "absolute";
+    btn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+    btn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+}
+
+// 🫶 Bouton OUI
+function oui() {
+    document.querySelector(".card").style.display = "none"; // cache les boutons
+
+    const gif = document.getElementById("gifContainer");
+    gif.style.display = "flex"; // affiche le GIF
+
+    const photo = document.getElementById("photo");
+    photo.style.display = "block"; // affiche la photo en dessous du GIF
+
+    // Lancer la musique douce
+    const music = document.getElementById("music");
+    music.play().catch(()=>{}); // évite erreur si navigateur bloque autoplay
+
+    // Message final
+    const message = document.createElement("h1");
+    message.innerText = "Joyeux Saint-Valentin Miss Linah 🫶";
+    message.style.color = "#0077cc";
+    message.style.marginTop = "20px";
+    document.body.appendChild(message);
+}
+</script>
+
+</body>
+</html>
