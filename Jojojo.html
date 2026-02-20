@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anniversaire Surprise 🎉</title>
+<style>
+body {
+    margin:0;
+    background:#ff5050;
+    font-family: Arial, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+}
+
+.container {
+    max-width:400px;
+    position: relative;
+}
+
+/* 🎁 Boîte cadeau animée */
+#gift {
+    font-size:100px;
+    cursor:pointer;
+    perspective: 1000px;
+    transition: transform 0.8s;
+}
+
+#gift.open .box {
+    transform: rotateX(180deg);
+}
+
+.box {
+    display: inline-block;
+    transition: transform 1s;
+}
+
+/* 🎉 Confettis */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius:50%;
+    top: -10px;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity:0; }
+}
+
+/* ✍ Texte machine à écrire */
+#message {
+    font-size:18px;
+    margin-top:15px;
+    min-height:50px;
+}
+
+img {
+    max-width:100%;
+    border-radius:15px;
+    margin-top:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 🎁 Écran cadeau -->
+    <div id="start">
+        <div id="gift" onclick="ouvrirCadeau()">
+            <div class="box">🎁</div>
+        </div>
+        <h3>Appuie sur le cadeau pour voir ta surprise !</h3>
+    </div>
+
+    <!-- 🎉 Écran final -->
+    <div id="final" class="hidden">
+        <!-- GIF chat qui embrasse -->
+        <img src="https://media.giphy.com/media/4Zo41lhzKt6iZ8xff9/giphy.gif" alt="Chat qui embrasse">
+
+        <!-- Texte d'anniversaire -->
+        <p id="message"></p>
+
+        <!-- Photo surprise -->
+        <img src="https://i.postimg.cc/svBBqmLL/IMG-20260214-WA0000.jpg">
+    </div>
+
+</div>
+
+<!-- 🎵 Musique d'anniversaire douce -->
+<audio id="music">
+    <source src="https://cdn.pixabay.com/audio/2022/07/18/audio_3f8727b2ef.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// 🎁 Ouvrir le cadeau
+function ouvrirCadeau(){
+    const gift = document.getElementById("gift");
+    gift.classList.add("open");
+
+    // Confettis
+    for(let i=0;i<100;i++){
+        createConfetti();
+    }
+
+    // Afficher écran final après 1s
+    setTimeout(showFinal,1000);
+}
+
+function showFinal(){
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+    document.getElementById("music").play();
+    typeMessage("Joyeux anniversaire Joanna ! 🥳🎂 Tu es incroyable !");
+}
+
+// 🎉 Confettis
+function createConfetti(){
+    const conf = document.createElement("div");
+    conf.classList.add("confetti");
+    conf.style.left = Math.random()*100 + "vw";
+    conf.style.background = randomColor();
+    conf.style.animationDuration = (Math.random()*3+2) + "s";
+    document.body.appendChild(conf);
+    setTimeout(()=>conf.remove(),4000);
+}
+
+function randomColor(){
+    const colors = ["#fff","#ffec00","#00fff0","#ff00ff","#ffb347"];
+    return colors[Math.floor(Math.random()*colors.length)];
+}
+
+// ✍ Texte machine à écrire
+function typeMessage(text){
+    let i=0;
+    const el = document.getElementById("message");
+    el.innerHTML="";
+    function typing(){
+        if(i<text.length){
+            el.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing,50);
+        }
+    }
+    typing();
+}
+</script>
+
+</body>
+</html>
