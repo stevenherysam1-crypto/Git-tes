@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bonne nuit avec étoiles filantes</title>
+<title>Générique texte défilant</title>
 <style>
 body{
   margin:0;
   background:black;
   overflow:hidden;
+  color:white;
+  font-family: Arial, sans-serif;
 }
 canvas{
   display:block;
@@ -24,91 +26,48 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* étoiles fixes */
+// texte à faire défiler
+const lines = [
+  "BONNE NUIT",
+  "FAIS DE BEAUX RÊVES SCINA",
+  "DÉSOLÉ DE TE DÉCEVOIR ENCORE"
+];
+
+// position de départ (en bas)
+let y = canvas.height;
+
+// vitesse de montée
+const speed = 0.5;
+
+// créer quelques étoiles fixes en arrière-plan
 let stars = [];
 for(let i=0;i<100;i++){
   stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2});
 }
 
-/* étoiles filantes (une par une) */
-let shootingStar = null;
-function createShootingStar(){
-  shootingStar = {
-    x: Math.random()*canvas.width/2,
-    y: Math.random()*canvas.height/3,
-    speed: 6 + Math.random()*4,
-    len: 120
-  };
-}
-setInterval(createShootingStar,1200);
-
-/* texte en particules */
-let particles = [];
-const textCanvas = document.createElement("canvas");
-const textCtx = textCanvas.getContext("2d");
-textCanvas.width = canvas.width;
-textCanvas.height = canvas.height;
-
-// écrire le texte au centre du canvas (pour récupérer les pixels)
-textCtx.fillStyle = "white";
-textCtx.font = "bold 30px Arial";
-textCtx.textAlign = "center";
-textCtx.fillText("BONNE NUIT", canvas.width/2, canvas.height/2 - 40);
-textCtx.fillText("FAIS DE BEAUX RÊVES SCINA", canvas.width/2, canvas.height/2);
-textCtx.fillText("DÉSOLÉ DE TE DÉCEVOIR ENCORE", canvas.width/2, canvas.height/2 + 40);
-
-// récupérer pixels pour créer particules
-let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
-for(let y=0;y<canvas.height;y+=6){
-  for(let x=0;x<canvas.width;x+=6){
-    let index=(y*canvas.width+x)*4;
-    if(data[index+3]>128){
-      particles.push({x:x, y:y + canvas.height, alpha:0}); // on commence en bas
-    }
-  }
-}
-
-/* animation */
-let progress = 0;
-let rise = 0;
-
 function animate(){
-  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  // fond noir avec transparence légère pour effet léger
+  ctx.fillStyle = "black";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // étoiles fixes
-  ctx.fillStyle="white";
+  // étoiles
+  ctx.fillStyle = "white";
   for(let s of stars){
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
   }
 
-  // étoile filante
-  if(shootingStar){
-    ctx.strokeStyle="white";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(shootingStar.x,shootingStar.y);
-    ctx.lineTo(shootingStar.x-shootingStar.len, shootingStar.y-shootingStar.len/2);
-    ctx.stroke();
-    shootingStar.x += shootingStar.speed;
-    shootingStar.y += shootingStar.speed/2;
-    if(shootingStar.x>canvas.width || shootingStar.y>canvas.height){
-      shootingStar = null;
-    }
+  // texte
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.font = "bold 36px Arial";
+
+  for(let i=0;i<lines.length;i++){
+    ctx.fillText(lines[i], canvas.width/2, y + i*50);
   }
 
-  // texte particules qui remontent progressivement
-  rise += 0.5; // vitesse de montée
-  for(let i=0;i<progress && i<particles.length;i++){
-    let p = particles[i];
-    if(p.alpha<1) p.alpha += 0.01;
-    ctx.fillStyle = "rgba(255,0,0,"+p.alpha+")";
-    ctx.fillRect(p.x, p.y - rise, 2, 2);
-  }
-
-  progress += 2; // apparition douce des particules
+  y -= speed; // le texte monte
 
   requestAnimationFrame(animate);
 }
