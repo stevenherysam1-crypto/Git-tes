@@ -27,21 +27,21 @@ canvas.height = window.innerHeight;
 
 /* étoiles fixes */
 let stars = [];
-for(let i=0;i<100;i++){ // moins d’étoiles pour lisibilité
+for(let i=0;i<100;i++){
   stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5});
 }
 
-/* étoile filante unique */
+/* étoiles filantes une par une */
 let shootingStar = null;
 function createShootingStar(){
   shootingStar = {
     x: Math.random()*canvas.width/2,
     y: Math.random()*canvas.height/3,
-    speed: 4 + Math.random()*2, // passage doux
+    speed: 4 + Math.random()*2,
     len: 80 + Math.random()*40
   };
 }
-setInterval(createShootingStar,1200); // une étoile filante toutes les 1,2s
+setInterval(createShootingStar,1200);
 
 /* texte en particules */
 let particles = [];
@@ -50,14 +50,14 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// texte blanc
+// texte réduit pour téléphone
 textCtx.fillStyle = "white";
-textCtx.font = "bold 40px Arial";
+textCtx.font = "bold 28px Arial"; // texte plus petit
 textCtx.textAlign = "center";
 textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2);
-textCtx.fillText("ET ENCORE DÉSOLÉ SCINA", canvas.width/2, canvas.height/2 + 50);
+textCtx.font = "bold 24px Arial"; 
+textCtx.fillText("ET ENCORE DÉSOLÉ SCINA", canvas.width/2, canvas.height/2 + 40);
 
-// récupérer pixels pour particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 for(let y=0;y<canvas.height;y+=6){
   for(let x=0;x<canvas.width;x+=6){
@@ -106,13 +106,12 @@ function animate(){
     ctx.fillRect(p.x,p.y,2,2);
   }
 
-  progress += 3; // apparition douce
+  progress += 3;
 
   requestAnimationFrame(animate);
 }
 
 animate();
-
 </script>
 </body>
 </html>
