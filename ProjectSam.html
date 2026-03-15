@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Étoiles et Cœur</title>
+<title>Étoiles filantes et cœur</title>
 <style>
 body{
   margin:0;
@@ -14,8 +14,6 @@ body{
 canvas{
   display:block;
 }
-
-/* bouton en bas */
 #giftBtn{
   position: fixed;
   bottom: 20px;
@@ -31,7 +29,6 @@ canvas{
 }
 </style>
 </head>
-
 <body>
 <canvas id="canvas"></canvas>
 <button id="giftBtn">Offrir un cadeau 🎁</button>
@@ -42,25 +39,31 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* étoiles normales */
+// étoiles fixes
 let stars = [];
-for(let i=0;i<150;i++){
-  stars.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*1.5,
-    speed: 1 + Math.random()*2,
-    target: null // pour cœur
-  });
+for(let i=0;i<100;i++){
+  stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5});
 }
 
-/* texte en particules */
+// étoiles filantes
+let shootingStars = [];
+function createShootingStar(){
+  shootingStars.push({
+    x: Math.random()*canvas.width,
+    y: 0,
+    speed: 6+Math.random()*4,
+    len: 80+Math.random()*40,
+    formingHeart: false // indicateur si elle participe au cœur
+  });
+}
+setInterval(createShootingStar,600);
+
+// texte en particules
 let particles = [];
 const textCanvas = document.createElement("canvas");
 const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
-
 textCtx.fillStyle = "white";
 textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
@@ -78,52 +81,73 @@ for(let y=0;y<canvas.height;y+=6){
   }
 }
 
-/* bouton pour activer le cœur */
-let formingHeart = false;
-document.getElementById("giftBtn").onclick = () => {
-  formingHeart = true;
-  // calculer positions des étoiles pour former le cœur
-  const heartPoints = [];
-  const centerX = canvas.width/2;
-  const centerY = canvas.height/2 + 20;
-  const scale = 15;
-  for(let t=0;t<Math.PI;t+=0.05){
-    const x = 16*Math.pow(Math.sin(t),3);
-    const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-    heartPoints.push({x:centerX + x*scale, y:centerY + y*scale});
-  }
-  for(let i=0;i<stars.length;i++){
-    if(i<heartPoints.length){
-      stars[i].target = heartPoints[i];
-    }
-  }
+// positions du cœur (pré-calculé)
+let heartPoints = [];
+const centerX = canvas.width/2;
+const centerY = canvas.height/2 + 20;
+const scale = 15;
+for(let t=0; t<Math.PI; t+=0.03){
+  const x = 16*Math.pow(Math.sin(t),3);
+  const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+  heartPoints.push({x:centerX + x*scale, y:centerY + y*scale});
 }
 
-/* animation */
+let formingHeart = false;
+
+// clic sur bouton
+document.getElementById("giftBtn").onclick = () => {
+  formingHeart = true;
+  let added = 0;
+  // marquer certaines étoiles filantes pour former le cœur
+  for(let s of shootingStars){
+    if(added < heartPoints.length){
+      s.formingHeart = true;
+      s.target = heartPoints[added];
+      added++;
+    }
+  }
+  // si pas assez d’étoiles filantes existantes, les futures seront utilisées
+};
+
+// animation
 let progress = 0;
 
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.4)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // étoiles
+  // étoiles fixes
+  ctx.fillStyle="white";
   for(let s of stars){
-    if(s.target && formingHeart){
-      // déplacer doucement vers la cible
-      s.x += (s.target.x - s.x)*0.05;
-      s.y += (s.target.y - s.y)*0.05;
-    }else{
-      // mouvement normal
-      s.x += (Math.random()-0.5)*s.speed;
-      s.y += s.speed;
-      if(s.y > canvas.height) s.y = 0;
-      if(s.x > canvas.width) s.x = 0;
-      if(s.x < 0) s.x = canvas.width;
-    }
-    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
+  }
+
+  // étoiles filantes
+  for(let i=0;i<shootingStars.length;i++){
+    let s = shootingStars[i];
+    if(formingHeart && s.formingHeart && s.target){
+      // déplacer vers le cœur
+      s.x += (s.target.x - s.x)*0.05;
+      s.y += (s.target.y - s.y)*0.05;
+    }else{
+      s.x += s.speed;
+      s.y += s.speed/2;
+    }
+    ctx.strokeStyle="white";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(s.x,s.y);
+    ctx.lineTo(s.x-s.len,s.y-s.len/2);
+    ctx.stroke();
+
+    // réinitialiser si hors écran
+    if(s.x>canvas.width || s.y>canvas.height){
+      s.x = Math.random()*canvas.width/2;
+      s.y = 0;
+      s.formingHeart = false; // nouvelles étoiles normales
+    }
   }
 
   // texte particules blanc
@@ -133,6 +157,7 @@ function animate(){
     ctx.fillStyle = "rgba(255,255,255,"+p.alpha+")";
     ctx.fillRect(p.x,p.y,2,2);
   }
+
   progress += 3;
 
   requestAnimationFrame(animate);
