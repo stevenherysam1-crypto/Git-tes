@@ -39,10 +39,22 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// étoiles normales
+// petites étoiles autour
 let stars = [];
-for(let i=0;i<100;i++){
-  stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5});
+for(let i=0;i<150;i++){
+  stars.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.5,
+    originalX:0,
+    originalY:0
+  });
+}
+
+// sauvegarder positions originales
+for(let s of stars){
+  s.originalX = s.x;
+  s.originalY = s.y;
 }
 
 // étoiles filantes
@@ -80,47 +92,46 @@ for(let y=0;y<canvas.height;y+=6){
   }
 }
 
-// positions du cœur (pré-calculé)
-let heartStars = [];
+// générer points du cœur
+let heartPoints = [];
 const centerX = canvas.width/2;
 const centerY = canvas.height/2 + 20;
-const scale = 15;
+const scale = 10;
 for(let t=0; t<Math.PI; t+=0.03){
   const x = 16*Math.pow(Math.sin(t),3);
   const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
-  heartStars.push({x:centerX + x*scale, y:centerY + y*scale, r:1.8});
+  heartPoints.push({x:centerX + x*scale, y:centerY + y*scale});
 }
 
 let showHeart = false;
 
-// clic sur bouton
+// clic sur bouton : étoiles autour se rapprochent pour former le cœur
 document.getElementById("giftBtn").onclick = () => {
   showHeart = true;
+  // attribuer chaque étoile fixe à une position du cœur (si assez)
+  for(let i=0;i<stars.length && i<heartPoints.length;i++){
+    stars[i].targetX = heartPoints[i].x;
+    stars[i].targetY = heartPoints[i].y;
+  }
 };
 
-// animation
 let progress = 0;
 
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.4)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // étoiles fixes
+  // étoiles fixes (ou en formation de cœur)
   ctx.fillStyle="white";
   for(let s of stars){
+    if(showHeart && s.targetX != undefined){
+      // déplacer doucement vers cible
+      s.x += (s.targetX - s.x)*0.1;
+      s.y += (s.targetY - s.y)*0.1;
+    }
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
-  }
-
-  // cœur formé d'étoiles fixes
-  if(showHeart){
-    ctx.fillStyle = "pink";
-    for(let s of heartStars){
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fill();
-    }
   }
 
   // étoiles filantes
@@ -148,7 +159,6 @@ function animate(){
     ctx.fillStyle = "rgba(255,255,255,"+p.alpha+")";
     ctx.fillRect(p.x,p.y,2,2);
   }
-
   progress += 3;
 
   requestAnimationFrame(animate);
