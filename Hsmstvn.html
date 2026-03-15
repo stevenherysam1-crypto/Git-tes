@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Étoiles Filantes Douces</title>
+<title>Étoiles Filantes avec GIF</title>
 <style>
 body{
   margin:0;
@@ -29,12 +29,23 @@ canvas{
   border-radius: 8px;
   cursor: pointer;
 }
+
+/* GIF de fleur */
+#flowerGif{
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none; /* caché au départ */
+  width: 150px; /* taille ajustable */
+}
 </style>
 </head>
 
 <body>
 <canvas id="canvas"></canvas>
 <button id="flowerBtn">Offrir une fleur 🌸</button>
+<img id="flowerGif" src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="Fleur GIF">
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -89,12 +100,10 @@ for(let y=0;y<canvas.height;y+=6){
 /* animation texte et étoiles */
 let progress = 0;
 
-// animation fleur
-let showFlower = false;
-let flowerY = canvas.height; // départ en bas
+// bouton pour afficher le GIF
+const flowerGif = document.getElementById("flowerGif");
 document.getElementById("flowerBtn").onclick = () => {
-  showFlower = true;
-  flowerY = canvas.height;
+  flowerGif.style.display = "block";
 };
 
 function animate(){
@@ -132,28 +141,7 @@ function animate(){
     ctx.fillRect(p.x,p.y,2,2);
   }
 
-  progress += 3; // apparition douce
-
-  // animation de la fleur (personnage simple)
-  if(showFlower){
-    flowerY -= 1; // monter doucement
-    ctx.fillStyle = "yellow";
-    ctx.beginPath();
-    ctx.arc(canvas.width/2, flowerY, 10, 0, Math.PI*2); // tête
-    ctx.fill();
-    ctx.strokeStyle="white";
-    ctx.lineWidth = 2;
-    // bras tenant fleur
-    ctx.beginPath();
-    ctx.moveTo(canvas.width/2, flowerY);
-    ctx.lineTo(canvas.width/2 + 20, flowerY + 20); // bras
-    ctx.stroke();
-    // fleur en rouge
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(canvas.width/2 + 22, flowerY + 22, 8,0,Math.PI*2);
-    ctx.fill();
-  }
+  progress += 3;
 
   requestAnimationFrame(animate);
 }
