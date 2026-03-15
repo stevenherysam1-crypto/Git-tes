@@ -31,7 +31,7 @@ for(let i=0;i<100;i++){
   stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5});
 }
 
-/* étoiles filantes une par une */
+/* étoile filante unique */
 let shootingStar = null;
 function createShootingStar(){
   shootingStar = {
@@ -50,14 +50,14 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// texte réduit pour téléphone
+// texte blanc
 textCtx.fillStyle = "white";
-textCtx.font = "bold 28px Arial"; // texte plus petit
+textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
-textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2);
-textCtx.font = "bold 24px Arial"; 
-textCtx.fillText("ET ENCORE DÉSOLÉ SCINA", canvas.width/2, canvas.height/2 + 40);
+textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 20); // première ligne
+textCtx.fillText("SCINA", canvas.width/2, canvas.height/2 + 30); // deuxième ligne
 
+// récupérer pixels pour particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 for(let y=0;y<canvas.height;y+=6){
   for(let x=0;x<canvas.width;x+=6){
@@ -112,6 +112,7 @@ function animate(){
 }
 
 animate();
+
 </script>
 </body>
 </html>
