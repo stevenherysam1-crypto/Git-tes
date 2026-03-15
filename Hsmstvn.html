@@ -9,15 +9,32 @@ body{
   margin:0;
   background:black;
   overflow:hidden;
+  font-family: Arial, sans-serif;
 }
 canvas{
   display:block;
+}
+
+/* bouton en bas */
+#flowerBtn{
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 <canvas id="canvas"></canvas>
+<button id="flowerBtn">Offrir une fleur 🌸</button>
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -50,12 +67,13 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// texte blanc
+// texte blanc avec ligne supplémentaire
 textCtx.fillStyle = "white";
-textCtx.font = Arial";
+textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
-textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 20); // première ligne
-textCtx.fillText("SCINA", canvas.width/2, canvas.height/2 + 30); // deuxième ligne
+textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 30);
+textCtx.fillText("SCINA", canvas.width/2, canvas.height/2 + 10);
+textCtx.fillText("ET ENCORE DÉSOLÉ", canvas.width/2, canvas.height/2 + 50);
 
 // récupérer pixels pour particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
@@ -68,8 +86,16 @@ for(let y=0;y<canvas.height;y+=6){
   }
 }
 
-/* animation */
+/* animation texte et étoiles */
 let progress = 0;
+
+// animation fleur
+let showFlower = false;
+let flowerY = canvas.height; // départ en bas
+document.getElementById("flowerBtn").onclick = () => {
+  showFlower = true;
+  flowerY = canvas.height;
+};
 
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.4)";
@@ -106,13 +132,33 @@ function animate(){
     ctx.fillRect(p.x,p.y,2,2);
   }
 
-  progress += 3;
+  progress += 3; // apparition douce
+
+  // animation de la fleur (personnage simple)
+  if(showFlower){
+    flowerY -= 1; // monter doucement
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, flowerY, 10, 0, Math.PI*2); // tête
+    ctx.fill();
+    ctx.strokeStyle="white";
+    ctx.lineWidth = 2;
+    // bras tenant fleur
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2, flowerY);
+    ctx.lineTo(canvas.width/2 + 20, flowerY + 20); // bras
+    ctx.stroke();
+    // fleur en rouge
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(canvas.width/2 + 22, flowerY + 22, 8,0,Math.PI*2);
+    ctx.fill();
+  }
 
   requestAnimationFrame(animate);
 }
 
 animate();
-
 </script>
 </body>
 </html>
