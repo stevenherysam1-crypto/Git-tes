@@ -41,14 +41,14 @@ canvas.height = window.innerHeight;
 
 // étoiles autour
 let stars = [];
-const totalStars = 150; // correspond au nombre de points du cœur
+const totalStars = 250; // plus d’étoiles pour former un cœur complet
 for(let i=0;i<totalStars;i++){
   stars.push({
     x: Math.random()*canvas.width,
     y: Math.random()*canvas.height,
     r: Math.random()*1.5,
-    speedX: (Math.random()-0.5)*0.2, // mouvement calme
-    speedY: (Math.random()-0.5)*0.2
+    speedX: (Math.random()-0.5)*0.1, // mouvement très calme
+    speedY: (Math.random()-0.5)*0.1
   });
 }
 
@@ -58,11 +58,11 @@ function createShootingStar(){
   shootingStars.push({
     x: Math.random()*canvas.width,
     y: 0,
-    speed: 6+Math.random()*4,
-    len: 80+Math.random()*40
+    speed: 2 + Math.random()*1.5, // plus doux
+    len: 60 + Math.random()*40
   });
 }
-setInterval(createShootingStar,600);
+setInterval(createShootingStar,800);
 
 // texte en particules
 let particles = [];
@@ -103,6 +103,7 @@ let showHeart = false;
 // clic sur bouton : étoiles autour se rapprochent pour former le cœur
 document.getElementById("giftBtn").onclick = () => {
   showHeart = true;
+  // attribuer chaque étoile autour à un point du cœur
   for(let i=0;i<stars.length && i<heartPoints.length;i++){
     stars[i].targetX = heartPoints[i].x;
     stars[i].targetY = heartPoints[i].y;
@@ -119,8 +120,8 @@ function animate(){
   ctx.fillStyle="white";
   for(let s of stars){
     if(showHeart && s.targetX != undefined){
-      s.x += (s.targetX - s.x)*0.1;
-      s.y += (s.targetY - s.y)*0.1;
+      s.x += (s.targetX - s.x)*0.08; // déplacement doux vers le cœur
+      s.y += (s.targetY - s.y)*0.08;
     } else {
       s.x += s.speedX;
       s.y += s.speedY;
