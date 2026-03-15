@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Étoiles Filantes avec GIF</title>
+<title>Étoiles et Cœur</title>
 <style>
 body{
   margin:0;
@@ -29,23 +29,12 @@ canvas{
   border-radius: 8px;
   cursor: pointer;
 }
-
-/* GIF cadeau */
-#giftGif{
-  position: fixed;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none; /* caché au départ */
-  width: 150px; /* taille ajustable */
-}
 </style>
 </head>
 
 <body>
 <canvas id="canvas"></canvas>
 <button id="giftBtn">Offrir un cadeau 🎁</button>
-<img id="giftGif" src="https://media.tenor.com/images/39ffdcd3f90ca54eb0d0a58d1df6d5fc/tenor.gif" alt="Cadeau GIF">
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -53,23 +42,17 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* étoiles fixes */
+/* étoiles normales */
 let stars = [];
-for(let i=0;i<100;i++){
-  stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.5});
+for(let i=0;i<150;i++){
+  stars.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.5,
+    speed: 1 + Math.random()*2,
+    target: null // pour cœur
+  });
 }
-
-/* étoile filante unique */
-let shootingStar = null;
-function createShootingStar(){
-  shootingStar = {
-    x: Math.random()*canvas.width/2,
-    y: Math.random()*canvas.height/3,
-    speed: 4 + Math.random()*2,
-    len: 80 + Math.random()*40
-  };
-}
-setInterval(createShootingStar,1200);
 
 /* texte en particules */
 let particles = [];
@@ -78,7 +61,6 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// texte blanc
 textCtx.fillStyle = "white";
 textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
@@ -86,7 +68,6 @@ textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 30);
 textCtx.fillText("SCINA", canvas.width/2, canvas.height/2 + 10);
 textCtx.fillText("ET ENCORE DÉSOLÉ", canvas.width/2, canvas.height/2 + 50);
 
-// récupérer pixels pour particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 for(let y=0;y<canvas.height;y+=6){
   for(let x=0;x<canvas.width;x+=6){
@@ -97,40 +78,52 @@ for(let y=0;y<canvas.height;y+=6){
   }
 }
 
-/* animation texte et étoiles */
-let progress = 0;
-
-// bouton pour afficher le GIF
-const giftGif = document.getElementById("giftGif");
+/* bouton pour activer le cœur */
+let formingHeart = false;
 document.getElementById("giftBtn").onclick = () => {
-  giftGif.style.display = "block";
-};
+  formingHeart = true;
+  // calculer positions des étoiles pour former le cœur
+  const heartPoints = [];
+  const centerX = canvas.width/2;
+  const centerY = canvas.height/2 + 20;
+  const scale = 15;
+  for(let t=0;t<Math.PI;t+=0.05){
+    const x = 16*Math.pow(Math.sin(t),3);
+    const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+    heartPoints.push({x:centerX + x*scale, y:centerY + y*scale});
+  }
+  for(let i=0;i<stars.length;i++){
+    if(i<heartPoints.length){
+      stars[i].target = heartPoints[i];
+    }
+  }
+}
+
+/* animation */
+let progress = 0;
 
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.4)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // étoiles fixes
-  ctx.fillStyle="white";
+  // étoiles
   for(let s of stars){
+    if(s.target && formingHeart){
+      // déplacer doucement vers la cible
+      s.x += (s.target.x - s.x)*0.05;
+      s.y += (s.target.y - s.y)*0.05;
+    }else{
+      // mouvement normal
+      s.x += (Math.random()-0.5)*s.speed;
+      s.y += s.speed;
+      if(s.y > canvas.height) s.y = 0;
+      if(s.x > canvas.width) s.x = 0;
+      if(s.x < 0) s.x = canvas.width;
+    }
+    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
-  }
-
-  // étoile filante
-  if(shootingStar){
-    ctx.strokeStyle="white";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(shootingStar.x,shootingStar.y);
-    ctx.lineTo(shootingStar.x-shootingStar.len, shootingStar.y-shootingStar.len/2);
-    ctx.stroke();
-    shootingStar.x += shootingStar.speed;
-    shootingStar.y += shootingStar.speed/2;
-    if(shootingStar.x>canvas.width || shootingStar.y>canvas.height){
-      shootingStar = null;
-    }
   }
 
   // texte particules blanc
@@ -140,8 +133,7 @@ function animate(){
     ctx.fillStyle = "rgba(255,255,255,"+p.alpha+")";
     ctx.fillRect(p.x,p.y,2,2);
   }
-
-  progress += 3; // apparition douce
+  progress += 3;
 
   requestAnimationFrame(animate);
 }
