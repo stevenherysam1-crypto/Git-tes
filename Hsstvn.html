@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Étoiles filantes avec texte</title>
+<title>Bonne nuit avec étoiles filantes</title>
 <style>
 body{
   margin:0;
@@ -49,19 +49,13 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// première ligne : FAIS DE BEAUX RÊVES
+// écrire le texte au centre du canvas (pour récupérer les pixels)
 textCtx.fillStyle = "white";
-textCtx.font = "bold 40px Arial";
+textCtx.font = "bold 30px Arial";
 textCtx.textAlign = "center";
-textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 40);
-
-// deuxième ligne : ET
-textCtx.font = "bold 40px Arial";
-textCtx.fillText("ET", canvas.width/2, canvas.height/2);
-
-// troisième ligne : DÉSOLÉ
-textCtx.font = "bold 40px Arial";
-textCtx.fillText("DÉSOLÉ", canvas.width/2, canvas.height/2 + 40);
+textCtx.fillText("BONNE NUIT", canvas.width/2, canvas.height/2 - 40);
+textCtx.fillText("FAIS DE BEAUX RÊVES SCINA", canvas.width/2, canvas.height/2);
+textCtx.fillText("DÉSOLÉ DE TE DÉCEVOIR ENCORE", canvas.width/2, canvas.height/2 + 40);
 
 // récupérer pixels pour créer particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
@@ -69,13 +63,14 @@ for(let y=0;y<canvas.height;y+=6){
   for(let x=0;x<canvas.width;x+=6){
     let index=(y*canvas.width+x)*4;
     if(data[index+3]>128){
-      particles.push({x:x, y:y, alpha:0});
+      particles.push({x:x, y:y + canvas.height, alpha:0}); // on commence en bas
     }
   }
 }
 
 /* animation */
 let progress = 0;
+let rise = 0;
 
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.3)";
@@ -104,15 +99,16 @@ function animate(){
     }
   }
 
-  // texte particules (doucement)
+  // texte particules qui remontent progressivement
+  rise += 0.5; // vitesse de montée
   for(let i=0;i<progress && i<particles.length;i++){
     let p = particles[i];
     if(p.alpha<1) p.alpha += 0.01;
     ctx.fillStyle = "rgba(255,0,0,"+p.alpha+")";
-    ctx.fillRect(p.x,p.y,2,2);
+    ctx.fillRect(p.x, p.y - rise, 2, 2);
   }
 
-  progress += 2; // apparition douce
+  progress += 2; // apparition douce des particules
 
   requestAnimationFrame(animate);
 }
