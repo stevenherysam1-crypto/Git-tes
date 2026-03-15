@@ -6,12 +6,12 @@
 <title>Étoiles filantes douces</title>
 <style>
 body{
-margin:0;
-background:black;
-overflow:hidden;
+  margin:0;
+  background:black;
+  overflow:hidden;
 }
 canvas{
-display:block;
+  display:block;
 }
 </style>
 </head>
@@ -27,18 +27,18 @@ canvas.height = window.innerHeight;
 /* étoiles fixes */
 let stars = [];
 for(let i=0;i<100;i++){
-stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2});
+  stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2});
 }
 
 /* étoiles filantes (une à la fois) */
 let shootingStar = null;
 function createShootingStar(){
-shootingStar = {
-x: Math.random()*canvas.width/2,
-y: Math.random()*canvas.height/3,
-speed: 6 + Math.random()*4,
-len: 120
-};
+  shootingStar = {
+    x: Math.random()*canvas.width/2,
+    y: Math.random()*canvas.height/3,
+    speed: 6 + Math.random()*4,
+    len: 120
+  };
 }
 setInterval(createShootingStar,1200);
 
@@ -49,64 +49,67 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
+// FAIS DE BEAUX RÊVES
 textCtx.fillStyle = "white";
 textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
-textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2);
-textCtx.font = "bold 30px Arial";
-textCtx.fillText("ET DÉSOLÉ", canvas.width/2, canvas.height/2+50);
+textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 20);
+
+// ET DÉSOLÉ
+textCtx.font = "bold 40px Arial";
+textCtx.fillText("ET DÉSOLÉ", canvas.width/2, canvas.height/2 + 40);
 
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
-
 for(let y=0;y<canvas.height;y+=6){
-for(let x=0;x<canvas.width;x+=6){
-let index=(y*canvas.width+x)*4;
-if(data[index+3]>128){
-particles.push({x:x, y:y, alpha:0});
-}
-}
+  for(let x=0;x<canvas.width;x+=6){
+    let index=(y*canvas.width+x)*4;
+    if(data[index+3]>128){
+      particles.push({x:x, y:y, alpha:0});
+    }
+  }
 }
 
 /* animation */
 let progress = 0;
 
 function animate(){
-ctx.fillStyle = "rgba(0,0,0,0.3)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-/* étoiles fixes */
-ctx.fillStyle="white";
-for(let s of stars){
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-}
+  // étoiles fixes
+  ctx.fillStyle="white";
+  for(let s of stars){
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+  }
 
-/* étoile filante */
-if(shootingStar){
-ctx.strokeStyle="white";
-ctx.lineWidth=2;
-ctx.beginPath();
-ctx.moveTo(shootingStar.x,shootingStar.y);
-ctx.lineTo(shootingStar.x-shootingStar.len, shootingStar.y-shootingStar.len/2);
-ctx.stroke();
-shootingStar.x += shootingStar.speed;
-shootingStar.y += shootingStar.speed/2;
-if(shootingStar.x>canvas.width || shootingStar.y>canvas.height){
-shootingStar = null;
-}
-}
+  // étoile filante
+  if(shootingStar){
+    ctx.strokeStyle="white";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(shootingStar.x,shootingStar.y);
+    ctx.lineTo(shootingStar.x-shootingStar.len, shootingStar.y-shootingStar.len/2);
+    ctx.stroke();
+    shootingStar.x += shootingStar.speed;
+    shootingStar.y += shootingStar.speed/2;
+    if(shootingStar.x>canvas.width || shootingStar.y>canvas.height){
+      shootingStar = null;
+    }
+  }
 
-/* texte particules (doucement) */
-for(let i=0;i<progress && i<particles.length;i++){
-let p = particles[i];
-if(p.alpha<1) p.alpha += 0.01;
-ctx.fillStyle = "rgba(255,0,0,"+p.alpha+")";
-ctx.fillRect(p.x,p.y,2,2);
-}
-progress += 2; // apparait plus doucement
+  // texte particules
+  for(let i=0;i<progress && i<particles.length;i++){
+    let p = particles[i];
+    if(p.alpha<1) p.alpha += 0.01;
+    ctx.fillStyle = "rgba(255,0,0,"+p.alpha+")";
+    ctx.fillRect(p.x,p.y,2,2);
+  }
 
-requestAnimationFrame(animate);
+  progress += 2; // apparait plus doucement
+
+  requestAnimationFrame(animate);
 }
 
 animate();
