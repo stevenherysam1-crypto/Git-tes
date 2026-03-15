@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shooting Star Text</title>
+<title>Etoiles filantes</title>
 
 <style>
 body{
 margin:0;
 background:black;
 overflow:hidden;
+font-family:Arial;
 }
 
 canvas{
@@ -21,118 +22,82 @@ display:block;
 
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="c"></canvas>
 
 <script>
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("c");
+const ctx=canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-let stars = [];
-let particles = [];
-let progress = 0;
+/* étoiles filantes */
 
-/* étoiles de fond */
+let shootingStars=[];
 
-for(let i=0;i<150;i++){
-stars.push({
+function createStar(){
+
+shootingStars.push({
 x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*2
+y:Math.random()*canvas.height/2,
+speed:6+Math.random()*6,
+len:80+Math.random()*40
 });
-}
-
-/* créer texte */
-
-const textCanvas = document.createElement("canvas");
-const textCtx = textCanvas.getContext("2d");
-
-textCanvas.width = canvas.width;
-textCanvas.height = canvas.height;
-
-textCtx.fillStyle="white";
-textCtx.font="bold 100px Arial";
-textCtx.textAlign="center";
-textCtx.fillText("WELCOME DAY",canvas.width/2,canvas.height/2);
-
-/* récupérer pixels */
-
-let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
-
-for(let y=0;y<canvas.height;y+=6){
-for(let x=0;x<canvas.width;x+=6){
-
-let index=(y*canvas.width+x)*4;
-
-if(data[index+3]>128){
-
-particles.push({x:x,y:y});
 
 }
 
+for(let i=0;i<8;i++){
+createStar();
 }
+
+/* texte */
+
+const text="FAIS DE BEAUX RÊVES\nET DÉSOLÉ";
+
+function drawText(){
+
+ctx.fillStyle="white";
+ctx.textAlign="center";
+
+ctx.font="bold 50px Arial";
+ctx.fillText("FAIS DE BEAUX RÊVES",canvas.width/2,canvas.height/2);
+
+ctx.font="bold 40px Arial";
+ctx.fillText("ET DÉSOLÉ",canvas.width/2,canvas.height/2+60);
+
 }
 
 /* animation */
 
-function drawBackground(){
-
-ctx.fillStyle="black";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-ctx.fillStyle="white";
-
-for(let s of stars){
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-}
-
-}
-
-function drawText(){
-
-for(let i=0;i<progress && i<particles.length;i++){
-
-let p=particles[i];
-
-ctx.fillStyle="red";
-ctx.fillRect(p.x,p.y,2,2);
-
-}
-
-}
-
-function drawStar(){
-
-let x=progress*2;
-let y=canvas.height/3;
-
-ctx.strokeStyle="red";
-ctx.lineWidth=3;
-
-ctx.beginPath();
-ctx.moveTo(x-80,y-20);
-ctx.lineTo(x,y);
-ctx.stroke();
-
-ctx.fillStyle="white";
-ctx.beginPath();
-ctx.arc(x,y,3,0,Math.PI*2);
-ctx.fill();
-
-}
-
 function animate(){
 
-drawBackground();
-drawText();
-drawStar();
+ctx.fillStyle="rgba(0,0,0,0.4)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
 
-progress+=6;
+for(let s of shootingStars){
+
+ctx.strokeStyle="white";
+ctx.lineWidth=2;
+
+ctx.beginPath();
+ctx.moveTo(s.x,s.y);
+ctx.lineTo(s.x-s.len,s.y-s.len/2);
+ctx.stroke();
+
+s.x+=s.speed;
+s.y+=s.speed/2;
+
+if(s.x>canvas.width || s.y>canvas.height){
+
+s.x=Math.random()*canvas.width/2;
+s.y=Math.random()*canvas.height/3;
+
+}
+
+}
+
+drawText();
 
 requestAnimationFrame(animate);
 
