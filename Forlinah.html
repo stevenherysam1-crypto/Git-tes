@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Shooting Heart</title>
+<title>Shooting Text</title>
 <style>
 body{
-background:black;
 margin:0;
+background:black;
 overflow:hidden;
 }
 
@@ -17,34 +17,72 @@ display:block;
 </head>
 
 <body>
+
 <canvas id="canvas"></canvas>
 
 <script>
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let x = 0;
+const text = "WELCOME DAY";
 
-function draw(){
+ctx.font = "bold 120px Arial";
+ctx.fillStyle = "white";
+ctx.fillText(text, canvas.width/4, canvas.height/2);
+
+const imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+const particles = [];
+
+for(let y=0;y<canvas.height;y+=6){
+for(let x=0;x<canvas.width;x+=6){
+
+const index = (y * canvas.width + x) * 4;
+
+if(imageData.data[index+3] > 128){
+
+particles.push({
+x:x,
+y:y,
+size:2
+});
+
+}
+
+}
+}
+
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-ctx.fillStyle = "red";
-ctx.font = "bold 80px Arial";
-ctx.fillText("Welcome Day", x, canvas.height/2);
+let progress = 0;
 
-x += 2;
+function animate(){
 
-if(x > canvas.width){
-x = -400;
+ctx.fillStyle="black";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="red";
+
+for(let i=0;i<progress && i<particles.length;i++){
+
+let p = particles[i];
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fill();
+
 }
 
-requestAnimationFrame(draw);
+progress+=30;
+
+requestAnimationFrame(animate);
 }
 
-draw();
+animate();
+
 </script>
 
 </body>
