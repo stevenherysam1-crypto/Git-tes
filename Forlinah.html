@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Shooting Heart</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shooting Star Text</title>
 
 <style>
 body{
@@ -11,6 +11,7 @@ margin:0;
 background:black;
 overflow:hidden;
 }
+
 canvas{
 display:block;
 }
@@ -20,11 +21,11 @@ display:block;
 
 <body>
 
-<canvas id="c"></canvas>
+<canvas id="canvas"></canvas>
 
 <script>
 
-const canvas = document.getElementById("c");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
@@ -32,11 +33,11 @@ canvas.height = window.innerHeight;
 
 let stars = [];
 let particles = [];
-let reveal = 0;
+let progress = 0;
 
-/* background stars */
+/* étoiles de fond */
 
-for(let i=0;i<120;i++){
+for(let i=0;i<150;i++){
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
@@ -44,20 +45,22 @@ r:Math.random()*2
 });
 }
 
-/* create text particles */
+/* créer texte */
 
-const textCanvas=document.createElement("canvas");
-const textCtx=textCanvas.getContext("2d");
+const textCanvas = document.createElement("canvas");
+const textCtx = textCanvas.getContext("2d");
 
-textCanvas.width=canvas.width;
-textCanvas.height=canvas.height;
+textCanvas.width = canvas.width;
+textCanvas.height = canvas.height;
 
 textCtx.fillStyle="white";
 textCtx.font="bold 100px Arial";
 textCtx.textAlign="center";
 textCtx.fillText("WELCOME DAY",canvas.width/2,canvas.height/2);
 
-let data=textCtx.getImageData(0,0,canvas.width,canvas.height).data;
+/* récupérer pixels */
+
+let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 
 for(let y=0;y<canvas.height;y+=6){
 for(let x=0;x<canvas.width;x+=6){
@@ -66,33 +69,33 @@ let index=(y*canvas.width+x)*4;
 
 if(data[index+3]>128){
 
-particles.push({
-x:x,
-y:y
-});
+particles.push({x:x,y:y});
 
 }
 
 }
 }
 
-function drawStars(){
+/* animation */
+
+function drawBackground(){
+
+ctx.fillStyle="black";
+ctx.fillRect(0,0,canvas.width,canvas.height);
 
 ctx.fillStyle="white";
 
 for(let s of stars){
-
 ctx.beginPath();
 ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
 ctx.fill();
-
 }
 
 }
 
-function drawParticles(){
+function drawText(){
 
-for(let i=0;i<reveal && i<particles.length;i++){
+for(let i=0;i<progress && i<particles.length;i++){
 
 let p=particles[i];
 
@@ -103,31 +106,33 @@ ctx.fillRect(p.x,p.y,2,2);
 
 }
 
-function drawShooting(){
+function drawStar(){
+
+let x=progress*2;
+let y=canvas.height/3;
 
 ctx.strokeStyle="red";
 ctx.lineWidth=3;
 
-let x=reveal*2;
-let y=canvas.height/3;
-
 ctx.beginPath();
-ctx.moveTo(x-120,y-40);
+ctx.moveTo(x-80,y-20);
 ctx.lineTo(x,y);
 ctx.stroke();
+
+ctx.fillStyle="white";
+ctx.beginPath();
+ctx.arc(x,y,3,0,Math.PI*2);
+ctx.fill();
 
 }
 
 function animate(){
 
-ctx.fillStyle="black";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+drawBackground();
+drawText();
+drawStar();
 
-drawStars();
-drawParticles();
-drawShooting();
-
-reveal+=8;
+progress+=6;
 
 requestAnimationFrame(animate);
 
