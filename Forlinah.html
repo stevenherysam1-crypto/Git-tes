@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Shooting Heart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
@@ -10,7 +11,6 @@ margin:0;
 background:black;
 overflow:hidden;
 }
-
 canvas{
 display:block;
 }
@@ -20,36 +20,55 @@ display:block;
 
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="c"></canvas>
 
 <script>
 
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let stars = [];
 let particles = [];
-let text = "WELCOME DAY";
+let reveal = 0;
 
-ctx.fillStyle="white";
-ctx.font="bold 120px Arial";
-ctx.fillText(text,100,canvas.height/2);
+/* background stars */
 
-let data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+for(let i=0;i<120;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2
+});
+}
+
+/* create text particles */
+
+const textCanvas=document.createElement("canvas");
+const textCtx=textCanvas.getContext("2d");
+
+textCanvas.width=canvas.width;
+textCanvas.height=canvas.height;
+
+textCtx.fillStyle="white";
+textCtx.font="bold 100px Arial";
+textCtx.textAlign="center";
+textCtx.fillText("WELCOME DAY",canvas.width/2,canvas.height/2);
+
+let data=textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 
 for(let y=0;y<canvas.height;y+=6){
 for(let x=0;x<canvas.width;x+=6){
 
-let index = (y * canvas.width + x) * 4;
+let index=(y*canvas.width+x)*4;
 
-if(data[index+3] > 128){
+if(data[index+3]>128){
 
 particles.push({
 x:x,
-y:y,
-alpha:0
+y:y
 });
 
 }
@@ -57,25 +76,58 @@ alpha:0
 }
 }
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+function drawStars(){
+
+ctx.fillStyle="white";
+
+for(let s of stars){
+
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+
+}
+
+}
+
+function drawParticles(){
+
+for(let i=0;i<reveal && i<particles.length;i++){
+
+let p=particles[i];
+
+ctx.fillStyle="red";
+ctx.fillRect(p.x,p.y,2,2);
+
+}
+
+}
+
+function drawShooting(){
+
+ctx.strokeStyle="red";
+ctx.lineWidth=3;
+
+let x=reveal*2;
+let y=canvas.height/3;
+
+ctx.beginPath();
+ctx.moveTo(x-120,y-40);
+ctx.lineTo(x,y);
+ctx.stroke();
+
+}
 
 function animate(){
 
 ctx.fillStyle="black";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-for(let i=0;i<particles.length;i++){
+drawStars();
+drawParticles();
+drawShooting();
 
-let p = particles[i];
-
-if(p.alpha < 1){
-p.alpha += 0.02;
-}
-
-ctx.fillStyle="rgba(255,0,0,"+p.alpha+")";
-ctx.fillRect(p.x,p.y,2,2);
-
-}
+reveal+=8;
 
 requestAnimationFrame(animate);
 
