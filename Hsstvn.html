@@ -16,7 +16,7 @@ canvas{
 }
 
 /* bouton en bas */
-#flowerBtn{
+#giftBtn{
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -30,8 +30,8 @@ canvas{
   cursor: pointer;
 }
 
-/* GIF de fleur */
-#flowerGif{
+/* GIF cadeau */
+#giftGif{
   position: fixed;
   bottom: 60px;
   left: 50%;
@@ -44,8 +44,8 @@ canvas{
 
 <body>
 <canvas id="canvas"></canvas>
-<button id="flowerBtn">Offrir une fleur 🌸</button>
-<img id="flowerGif" src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="Fleur GIF">
+<button id="giftBtn">Offrir un cadeau 🎁</button>
+<img id="giftGif" src="https://media.tenor.com/images/39ffdcd3f90ca54eb0d0a58d1df6d5fc/tenor.gif" alt="Cadeau GIF">
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -78,7 +78,7 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// texte blanc avec ligne supplémentaire
+// texte blanc
 textCtx.fillStyle = "white";
 textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
@@ -101,9 +101,9 @@ for(let y=0;y<canvas.height;y+=6){
 let progress = 0;
 
 // bouton pour afficher le GIF
-const flowerGif = document.getElementById("flowerGif");
-document.getElementById("flowerBtn").onclick = () => {
-  flowerGif.style.display = "block";
+const giftGif = document.getElementById("giftGif");
+document.getElementById("giftBtn").onclick = () => {
+  giftGif.style.display = "block";
 };
 
 function animate(){
@@ -141,7 +141,7 @@ function animate(){
     ctx.fillRect(p.x,p.y,2,2);
   }
 
-  progress += 3;
+  progress += 3; // apparition douce
 
   requestAnimationFrame(animate);
 }
