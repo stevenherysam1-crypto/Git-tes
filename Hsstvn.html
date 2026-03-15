@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Étoiles filantes douces</title>
+<title>Étoiles filantes avec texte</title>
 <style>
 body{
   margin:0;
@@ -30,7 +30,7 @@ for(let i=0;i<100;i++){
   stars.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2});
 }
 
-/* étoiles filantes (une à la fois) */
+/* étoiles filantes (une par une) */
 let shootingStar = null;
 function createShootingStar(){
   shootingStar = {
@@ -49,16 +49,21 @@ const textCtx = textCanvas.getContext("2d");
 textCanvas.width = canvas.width;
 textCanvas.height = canvas.height;
 
-// FAIS DE BEAUX RÊVES
+// première ligne : FAIS DE BEAUX RÊVES
 textCtx.fillStyle = "white";
 textCtx.font = "bold 40px Arial";
 textCtx.textAlign = "center";
-textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 20);
+textCtx.fillText("FAIS DE BEAUX RÊVES", canvas.width/2, canvas.height/2 - 40);
 
-// ET DÉSOLÉ
+// deuxième ligne : ET
 textCtx.font = "bold 40px Arial";
-textCtx.fillText("ET DÉSOLÉ", canvas.width/2, canvas.height/2 + 40);
+textCtx.fillText("ET", canvas.width/2, canvas.height/2);
 
+// troisième ligne : DÉSOLÉ
+textCtx.font = "bold 40px Arial";
+textCtx.fillText("DÉSOLÉ", canvas.width/2, canvas.height/2 + 40);
+
+// récupérer pixels pour créer particules
 let data = textCtx.getImageData(0,0,canvas.width,canvas.height).data;
 for(let y=0;y<canvas.height;y+=6){
   for(let x=0;x<canvas.width;x+=6){
@@ -99,7 +104,7 @@ function animate(){
     }
   }
 
-  // texte particules
+  // texte particules (doucement)
   for(let i=0;i<progress && i<particles.length;i++){
     let p = particles[i];
     if(p.alpha<1) p.alpha += 0.01;
@@ -107,7 +112,7 @@ function animate(){
     ctx.fillRect(p.x,p.y,2,2);
   }
 
-  progress += 2; // apparait plus doucement
+  progress += 2; // apparition douce
 
   requestAnimationFrame(animate);
 }
